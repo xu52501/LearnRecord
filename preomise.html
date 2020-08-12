@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script>
+    async function asyncl(){
+      console.log('asyncl start');
+      const rs = await async2(); // return new Promise(promise test);
+      console.info(rs, 'asyncl end');
+    }
+    async function async2(){
+      const f1 = () => {
+        return new Promise(function(resolve){
+          console.log('promise3')
+          resolve('promise test');
+        })
+      }
+      const rs = await f1();  // return new Promise(promise test);
+      console.log(rs, 'async2');
+      return rs;
+    }
+
+    console.log('script start');
+
+    setTimeout (function(){
+      console. log('setTimeout')
+    }, 0 )
+
+    asyncl();
+
+    new Promise(function(resolve){
+      console.log('promisel')
+      resolve();
+    }).then(function(){
+      console.log('then1');
+    })
+
+    console.log('script end');
+  </script>
+</head>
+<body>
+
+</body>
+</html>

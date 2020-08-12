@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+  var Fun = function () {}
+
+  var f1 = new Fun();  // f1.constructor === Fun
+
+  f1.__proto__ === Fun.prototype;
+
+  // instanceof运算符用来判断一个构造函数的prototype属性所指向的对象是否存在另外一个要检测对象的原型链上
+  // instanceof 是通过原型链判断的，A instanceof B, 在A的原型链中层层查找，是否有原型等于B.prototype，如果一直找到A的原型链的顶端null,仍然不等于B.prototype，那么返回false，否则返回true.
+  f1 instanceof Fun // true
+  // js实现方法
+  function instance(left,right){
+      left=left.__proto__
+      right=right.prototype
+      while(true){
+           if(left==null)
+                return false;
+           if(left===right)
+                return true;
+           left=left.__proto__
+      }
+  }
+
+  Function.prototype === Function.__proto__ === Object.__proto__
+  // Function和Object都是函数
+  Function instanceof Object;     //true，，Object.protype是所有对象的原型链根节点，Function.prototype._-proto__===Function.__proto__.__proto__===Object.prototype
+  Object instanceof Function;     //true，，Object.__proto__===Function.prototype
+  Function instanceof Function;   //true，，Function.__proto__===Function.prototype
+  Object instanceof Object;       //true，，Object.__proto__.__proto__===Object.prototype
+  Object instanceof Array;        // false，，Array.prototype === [Object.prototype]
+
+  // 为什么Function函数和Object函数的proto都等于Function.prototype呢
+  // 注意Function和Object都是函数，而所有的函数都是Function函数的对象（有点绕）！所以同上，它们的proto应该等于Function.prototype。
+
+  // Function.prototype与Foo.prototype同样是对象，它们也是通过Object函数构建的，所以它们的proto也等于Object.prototype。
+  Function.prototype.__proto__ === Object.prototype
+  Fun.prototype.__proto__ === Object.prototype
+
+
+  // 模拟new操作
+  function newObj(Fun,arguments) {
+    var o = {};
+    if (Fun && typeof Fun === "function") {
+      o.__proto__ = Fun.prototype;
+      Fun.apply(o, arguments);
+      return o;
+    }
+  }
+
+  // 调用公有方法，公有属性，我们必需先实例化对象，也就是用new操作符实化对象，就可构造函数实例化对象的方法和属性，并且公有方法是不能调用私有方法和静态方法的
+  // 静态方法和静态属性就是我们无需实例化就可以调用
+  // 而对象的私有方法和属性,外部是不可以访问的
+
+
+  function Foo() {
+      getName = function () { alert (1); };
+
+      // new返回obj，不new返回window
+      // 实际执行的返回值就是此构造函数的实例化对象。
+      console.log(this);
+      return this;
+  }
+  Foo.getName = function () { alert (2);};
+  Foo.prototype.getName = function () { console.log(this);alert (3);};
+  var getName = function () { alert (4);};
+  function getName() { alert (5);}
+
+  // new的this指向实例对象，直接执行指向window
+  //请写出以下输出结果：2,4,1,1,2,3,3
+
+  Foo.getName();
+  getName();
+  Foo().getName(); // this指向window
+  getName();
+  new Foo.getName(); // new Foo 17 new (Foo.getName)(); this指向Foo.prototype
+  new Foo().getName(); // new Foo 18 (new Foo()).getName(); this指向Foo.prototype
+  new new Foo().getName(); // new (new Foo()).getName();
+
+//   这题首先看优先级的第18和第17都出现关于new的优先级，new (带参数列表)比new (无参数列表)高比函数调用高，跟成员访问同级
+
+// new Foo.getName();的优先级是这样的
+
+// 相当于是:
+
+// new (Foo.getName)();
+// 点的优先级(18)比new无参数列表(17)优先级高
+// 当点运算完后又因为有个括号()，此时就是变成new有参数列表(18)，所以直接执行new，当然也可能有朋友会有疑问为什么遇到()不函数调用再new呢，那是因为函数调用(17)比new有参数列表(18)优先级低
+// .成员访问(18)->new有参数列表(18)
+// 所以这里实际上将getName函数作为了构造函数来执行，遂弹出2。
+
+
+  // 构造函数的返回值
+
+  // 在传统语言中，构造函数不应该有返回值，实际执行的返回值就是此构造函数的实例化对象。
+  // 而在JS中构造函数可以有返回值也可以没有。
+
+  // 没有返回值则按照其他语言一样返回实例化对象。
+  // function Foo(name) {
+  // this.name = name
+  // }
+  // console.log(new Foo('wscats'))
+
+  // 若有返回值则检查其返回值是否为引用类型。如果是非引用类型，如基本类型（String,Number,Boolean,Null,Undefined）则与无返回值相同，实际返回其实例化对象。
+  // function Foo(name) {
+  // this.name = name
+  // return 520
+  // }
+  // console.log(new Foo('wscats'))
+
+
+  // 若返回值是引用类型，则实际返回值为这个引用类型。
+  // function Foo(name) {
+  // this.name = name
+  // return {
+  // age: 16
+  // }
+  // }
+  // console.log(new Foo('wscats'))
+
+  // 原题中，由于返回的是this，而this在构造函数中本来就代表当前实例化对象，最终Foo函数返回实例化对象。
+
+  // 之后调用实例化对象的getName函数，因为在Foo构造函数中没有为实例化对象添加任何属性，当前对象的原型对象(prototype)中寻找getName函数。
+
+  // 当然这里再拓展个题外话，如果构造函数和原型链都有相同的方法，如下面的代码，那么默认会拿构造函数的公有方法而不是原型链，这个知识点在原题中没有表现出来，后面改进版我已经加上。
+
+  // function Foo(name) {
+  // this.name = name
+  // this.getName = function() {
+  // return this.name
+  // }
+  // }
+  // Foo.prototype.name = 'Oaoafly';
+  // Foo.prototype.getName = function() {
+  // return 'Oaoafly'
+  // }
+  // console.log((new Foo('Wscats')).name) //Wscats
+  // console.log((new Foo('Wscats')).getName()) //Wscats
+  </script>
+</body>
+</html>

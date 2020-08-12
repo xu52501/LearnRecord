@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="counter">0</div>
+    <button class="inc">inc</button>
+    <button class="dec">dec</button>
+    <script>
+    let currentEffect;
+    let effectMap = new Map();
+
+    function reactive(obj) {
+      const proxied = new Proxy(obj, {
+        get: function(target, key, receiver) {
+          if (currentEffect) {
+            if (effectMap.has(key)) {
+              const effects = effectMap.get(key);
+
+              if (effects.indexof(currentEffect) === -1) {
+                effects.push(currentEffect);
+              }
+            } else {
+              effectMap.set(key, [currentEffect]);
+              console.log(effectMap);
+            }
+          }
+
+          return Reflect.get(target, key, receiver);
+        },
+        set: function(target, key, value, receiver) {
+          const result = Reflect.set(target, key, value, receiver);
+
+          if (effectMap.has(key)) {
+            console.log(effectMap);
+            effectMap.get(key).forEach(effect => {
+              console.log(effect);
+              effect()
+            });
+          }
+
+          return result;
+        }
+      });
+
+      return proxied;
+    }
+
+    function effect(fn) {
+      const effected = function() {
+        fn();
+      }
+
+      // get赋值
+      currentEffect = effected;
+      effected();
+      currentEffect = undefined;
+
+      return effected;
+    }
+
+    const state = reactive({
+      foo: 0,
+    });
+
+    const $counter = document.querySelector(".counter");
+    const $inc = document.querySelector(".inc");
+    const $dec = document.querySelector(".dec");
+
+    $inc.addEventListener("click", () => state.foo++);
+    $dec.addEventListener("click", () => state.foo--);
+
+    effect(() => {
+      // 触发get
+      $counter.textContent = state.foo;
+    })
+    </script>
+  </body>
+</html>

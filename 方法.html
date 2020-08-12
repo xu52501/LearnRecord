@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+  // instanceof,用来判断一个构造函数的prototype属性所指的对象是否存在另一个要检测对象的原型链上
+  var A = function () {}
+  A.prototype = {};
+
+  var a = new A();   // a.__proto__ === A.prototype  a instanceof A true
+  A.prototype = {};
+  console.log(a instanceof A) // false 因为原型被重置为{}了
+
+  // isPrototypeOf确定一个对象的原型链中是否继承了prototype
+  var d = new A();
+  A.prototype.isPrototypeOf(d)  // true
+
+  // getPrototypeOf返回对象__proto__指向的原型prototype
+  Object.getPrototypeOf(a) // {}， a.__proto__
+
+  // hasOwnProperty判断对象是否包含特定的自身属性（非继承的）
+
+  // Object.create()创建一个空对象，有两个参数
+  // 使用Object.create()是将对象继承到__proto__属性上
+  Object.create(null) // No Properties 返回一个原型链为空的对象
+  Object.create({a: 1}) // {}, {}.__proto__.a = 1
+
+  // const v1 = {a: 10}
+  // const f1 = (x = {...v1}) => {console.log(x.a *= 2)}
+  // f1() 声明一个新的局部变量
+  // VM4621:2 20
+  // f1()
+  // VM4621:2 20
+  // {a: 10}
+  // f1(v1) 赋值
+  // VM4621:2 20
+  // f1(v1)
+  // VM4621:2 40
+  // 答案：
+
+  // 20 20 20 40
+
+  // 解析:
+
+  // 1.在ES6中，我们可以使用默认值初始化参数。如果没有给函数传参，或者传的参值为undefined，那么参数的值将是默认值。2.本题中，我们将value对象进行了解构并传到一个新对象中，因此x的默认值为{number：10}
+  // 3.默认参数在调用时才会进行计算，每次调用函数时，都会创建一个新的对象。我们前两次调用multiply函数且不传递值，那么每一次x的默认值都为{number：10}，因此打印出该数字的乘积值为20。
+  // 4.第三次调用multiply时，我们传递了一个参数，即对象value，*=运算符实际上是x.number=x.number*2的简写，我们修改了x.number的值，并打印出值20。
+  // 5.第四次，我们再次传递value对象。x.number之前被修改为20，所以x.number*=2打印为40。
+  </script>
+</body>
+</html>

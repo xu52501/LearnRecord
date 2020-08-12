@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="ccc"><button disabled="disabled">345345345345345354354</button></div>
+  <script>
+    function A1() {
+      this.a = 10;
+    }
+
+    A1.c = 10;
+
+    A1.prototype.b = 100;
+
+    function B1() {
+      this.a1 = 100;
+    }
+    B1.prototype = A1.prototype;
+
+    const b1 = new B1()
+    console.log(b1, b1.a, b1.c)
+
+    // this是在运行时确定的
+    // 注意：原型的静态属性不能继承，类的静态属性是可以继承的。
+  class A {
+    static ppt = 100;
+    constructor(a, b) {
+      this.a = a;
+      this.b = 'b';
+      this.c = 'c';
+
+      this.aFun1();
+      console.log('继承函数我也执行了');
+    }
+
+    aFun1() {
+      console.log('我是class A的方法');
+    }
+  }
+
+  class B extends A {
+    constructor() {
+      // this必须要super()才能使用
+      super('c') // 等价于Parent.apply(this, arguments),执行Parent，继承父级对象, B {a: "c", b: "b", c: "c"}就是this
+      this.d = 'd'
+    }
+    m1() {
+      console.log('m1', this.d, this.c, this.a, B.ppt);
+    }
+  }
+
+  const b = new B();
+  b.m1();
+  </script>
+  <script>
+    // window.onload = function() {
+    //   document.getElementById('ccc').addEventListener('click', function () {
+    //     alert('asdasd')
+    //   });
+    // }
+  'use strict'
+  // 备注：箭头函数的this是继承自父级作用域，所以在严格模式下是可以指向window的
+  // 函数内部指向全局this的函数会指向undefined,箭头函数使用bind，是没有用的。
+  console.log(this);   // true
+  (() => {
+    console.log('this', this)
+  })()
+  var o = {
+    a: () => {
+      console.log('a', this);
+    },
+    b() {
+      console.log('b', this);
+      var d = () => {
+        console.log('d', this);
+      }
+      d();
+
+      var e = function() {
+        console.log('e', this);
+      }
+      e();
+    }
+  }
+  o.a();
+  o.b();
+
+  const test = () => {
+    console.log('test', this);
+  }
+  test();
+
+  const test1 = function() {
+    console.log('test1', this);
+
+    var e = function() {
+      console.log('test1 e', this);
+    }
+
+    var f = () => {
+      console.log('test1 f', this);
+    }
+    e();
+    f();
+  }
+  test1();
+
+
+
+  // 引用类型传参就只传了一个地址
+  var o1 = {
+    a: 1
+  }
+
+  function t1(obj) {
+    obj = {
+      a: 2,
+    }
+
+    o1 = {
+      a: 3
+    }
+
+    console.log(obj, o1);
+  }
+  t1(o1);
+
+  </script>
+</body>
+</html>

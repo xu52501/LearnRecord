@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // 函数内部返回，因为是独立的作用域，所以每个返回的值都是独立的内存地址，不会互相影响
+  function f1 () {return {a: {a: 1}, b:2}}
+  undefined
+  a1 = f1() //{a: {…}, b: 2}
+  a2 = f1() //{a: {…}, b: 2}
+  a1.a.a = 10
+  a1.a //{a: 10}
+  a2.a //{a: 1}
+
+  a24 = {a: {a: 1}, b:2}
+  function f2() { return a24}
+  a3 = f2()
+  a4 = f2()
+  a3.a.a = 100
+  a3.a //{a: 100}
+  a4.a //{a: 100}
+
+  // 块级作用域{}
+  // {}是纯代码块，{} + [] = 0
+  {
+    function a() {}
+    a = 3;
+  }
+
+  console.log(a);
+  </script>
+</body>
+</html>

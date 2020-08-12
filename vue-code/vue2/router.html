@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="./vue.js"></script>
+  <script src="./vueRouter.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    const index = {
+      // <c></c>
+      template: `<div class="a1000">{{a}}</div>`,
+      data() {
+        return {
+          a: 1000,
+        }
+      },
+      beforeRouteEnter() {}
+    };
+    Vue.use(VueRouter);
+    const router = new VueRouter({
+      // base: process.env.BASE_URL,
+      base: '/',
+      routes: [{
+        name: 'index',
+        component: index,
+        path: '/',
+      }],
+    })
+    const v = new Vue({
+      template: '<router-view></router-view>',
+      router, // 会挂载到options上
+      // aaaaa: '',
+    })
+
+    v.$mount('#app');
+  </script>
+</body>
+</html>

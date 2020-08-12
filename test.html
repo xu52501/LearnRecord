@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      padding-top: 100px;
+      text-align: center;
+      background: black;
+    }
+    .g-load_ppp {
+      display: inline-block;
+      vertical-align: middle;
+      text-align: center;
+    }
+    .icon {
+      display: inline-block;
+      vertical-align: middle;
+      width: 12px;
+      height: 12px;
+      font-size: 0;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .icon:last-child {
+      margin-right: 0;
+    }
+    .g-loading_3a i {
+      animation: a_loading_3a .6s infinite steps(1, end);
+    }
+    .g-loading_3a i:first-child {
+      background-color: #3a89f6;
+      animation-delay: .4s;
+    }
+    .g-loading_3a i:nth-child(2) {
+      background-color: #9cc4fa;
+      animation-delay: .2s;
+    }
+    .g-loading_3a i:last-child {
+      background-color: #d8e7fd;
+      animation-delay: 0;
+    }
+    @keyframes a_loading_3a {
+      0%,100% {
+        background-color: #3a89f6;
+      }
+      33.333% {
+        background-color: #9cc4fa;
+      }
+      66.666% {
+        background-color: #d8e7fd;
+      }
+    }
+    .jianbian {
+      width: 200px;
+      height: 40px;
+      border: 1px solid red;
+      background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, #ffffff 20%);
+    /* background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#000000), color-stop(100%,#ffffff));
+    background: -webkit-linear-gradient(top, #000000 0%,#ffffff 100%);
+    background: -o-linear-gradient(top, #000000 0%,#ffffff 100%);
+    background: -ms-linear-gradient(top, #000000 0%,#ffffff 100%);
+    background: linear-gradient(to bottom, #000000 0%,#ffffff 100%); */
+    }
+  </style>
+</head>
+<body>
+  <div class="g-load_ppp g-loading_3a" :class="">
+    <i class="iconfont icon icon-icon_loading_"></i>
+    <i class="iconfont icon icon-icon_loading_"></i>
+    <i class="iconfont icon icon-icon_loading_"></i>
+  </div>
+
+  <div class="jianbian"></div>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="app1"></div>
+  <script src="./vue.js"></script>
+
+  <script>
+    // function y1() {
+    //   y1();
+    // }
+    // // y1();
+    // function y2() {
+    //   setTimeout(y2);
+    // }
+    // y2();
+    // function y3() {
+    //   Promise.resolve().then((res) => {
+    //     console.log(234234);
+    //     y3();
+    //   })
+    // }
+
+    // // y3();
+
+  const amt = {
+    // <c></c>
+    template: `<div class="a1000">{{a}}</div>`,
+    data() {
+      return {
+        a: 1000,
+      }
+    },
+    // beforeMount() {
+    //   console.log('beforeMount4')
+    // },
+    // mounted() {
+    //   console.log('Mount4')
+    // },
+    // beforeCreate() {
+    //   console.log('beforeCreate4')
+    // },
+    // created() {
+    //   console.log('Create4')
+    // },
+  };
+
+    // console.log('123123')
+  const c = {
+//     ƒ anonymous(
+// ) {
+// with(this){return _c('div',[_v(_s(a)),_c('amt'),_t("cxx")],2)}
+// }
+    // template: `<div>{{a}}<amt></amt><slot name="cxx"></slot></div>`,
+    data() {
+      return {
+        a: 2,
+      }
+    },
+    // render()
+    render(c) {
+      const vNode = c('div', {
+        domProps: {
+          innerText: this.a,
+        }
+      }, ['werwer', c('amt', {})]);
+
+      console.log(vNode);
+      return vNode;
+    },
+    // beforeMount() {
+    //   console.log('beforeMount3')
+    // },
+    // mounted() {
+    //   console.log('Mount3')
+    // },
+    // beforeCreate() {
+    //   console.log('beforeCreate3')
+    // },
+    // created() {
+    //   console.log('Create3')
+    // },
+    components: {
+      amt
+    }
+  }
+  
+  const d = {
+    name: 'd',
+    // <c></c>
+//     (function anonymous(
+// ) {
+// with(this){return _c('div',{staticClass:"b",on:{"click":function($event){$event.stopPropagation();return handleClick($event)}}},[(a)?_c('c'):_e(),_c('c',[_c('span',{attrs:{"slot":"cxx"},slot:"cxx"},[_v("2342")])]),_v(_s(b)),_c('div',[_v(_s(b)+_s(d))])],1)}
+// })
+    template: `<div class="b" ref="d" @click.stop="handleClick($event, 123)"><c v-if="a === 2"></c><c><span slot="cxx" v-if="a === 2" @click="a++">2342</span></c>{{b}}<div>{{b}}{{d}}</div></div>`,
+    data() {
+      return {
+        a: 1,
+        e: [],
+        d: {},
+      }
+    },
+    // provide 和 inject 绑定并不是可响应的
+    inject: ['name'],
+    props: ['b'],
+    methods: {
+      handleClick(e, d) {
+        console.log(e, d)
+        this.a++
+        this.$set(this.d, 'a', 1);
+      }
+    },
+    // updated() {
+    //   console.log(345);
+    // },
+    // beforeUpdate() {
+    //   console.log('子级 beforeUpdate')
+    // },
+    // beforeMount() {
+    //   console.log('beforeMount2')
+    // },
+    // mounted() {
+    //   console.log('Mount2')
+    // },
+    // beforeCreate() {
+    //   console.log('beforeCreate2')
+    // },
+    // created() {
+    //   console.log('Create2')
+    // },
+    // components: {
+    //   c
+    // }
+    // el: '#app1'
+  };
+  
+  const v = new Vue({
+    template: `<div class="a" @click="handleClick"><d :b="b"></d>{{a}}{{ga}}<span v-for="item in b" :key="item">{{b}}</span></div>`,
+    provide: {
+      name: 'sadfsddf'
+    },
+    data: {
+      a: 1,
+      b: 200,
+      // 初始化的时候组件没使用到的元素不会触发依赖收集，使用的时候才会触发get
+      d: [],
+    },
+    // beforeMount() {
+    //   console.log('beforeMount1')
+    // },
+    // mounted() {
+    //   console.log('Mount1')
+    // },
+    // beforeCreate() {
+    //   console.log('beforeCreate1')
+    // },
+    // created() {
+    //   console.log('Create1')
+    // },
+    methods: {
+      handleClick() {
+        // this.a++;
+        this.b++;
+        this.a--;
+        // console.log(2);
+      }
+    },
+    components: {
+      d
+    },
+    watch: {
+      'a'() {
+        console.log('aaa')
+      }
+    },
+    computed: {
+      ga() {
+        return this.a + 'dd'
+      }
+    },
+  });
+
+  // const extend = Vue.extend({
+  //   template: `<c></c>`,
+  //   data() {
+  //     return {
+  //       a: 1,
+  //     }
+  //   },
+  //   components: {
+  //     c
+  //   }
+  // });
+  const tt = {}
+  Vue.use(function(vue) {
+    // 或直接挂载到vue.options.components上面，子组件直接继承就可以使用
+    // debugger;
+    Vue.component('c', c);
+    Vue.component('tt', tt);
+  })
+
+  // const m = new Vue({
+  //   template: '<keep-alive><c></c><div>sdfsdf</div></keep-alive>'
+  // })
+  // console.log(v, extend, new extend().$mount('#app1'));
+  // console.log(Vue.component);
+  // console.log(Vue.component('extend'))
+  // console.log(v, Vue.options)
+
+  // console.log(new (Vue.extend(c)));
+  // // 继承的局部方法，注册到组件
+  // (new (Vue.extend(c))).$mount('#app1');
+  v.$mount('#app');
+
+//   let Son = Vue.extend({
+//    data () {
+//      return {
+//         name: 'Jerry'
+//      }
+//    },
+//    watch: {
+//      name(){
+//        console.info('name changed detected in parent')
+//      }
+//    }
+//  })
+
+//  let son = new Son({
+//    watch: {
+//      name(){
+//        console.info('name changed detected in son')
+//      }
+//    }
+// watch: {
+//     name: [
+//       function() {
+//         console.info('name changed son-01')
+//       },
+//       function(){
+//         console.info('name chaned son-02')
+//       }
+//     ]
+//   }
+//  })
+
+// son.name = 'Judy'
+// name changed detected in parent
+// name changed detected in son
+  </script>
+  <script>
+    // prepatch: function prepatch (oldVnode, vnode) {
+    //   var options = vnode.componentOptions;
+    //   var child = vnode.componentInstance = oldVnode.componentInstance;
+    //   // debugger;
+    //   // update子组件
+    //   updateChildComponent(
+    //     child,
+    //     options.propsData, // updated props
+    //     options.listeners, // updated listeners
+    //     vnode, // new parent vnode
+    //     options.children // new children
+    //   );
+    // },
+    // 组件更新流程
+    // v触发handleClick时先触发this.a的get，再触发set，收集v组件的watcher并加入到queue队列中去
+    // 再触发this.b的get，set，收集v组件的watcher添加到queue，由于当前queue队列里面已经有v组件的watcher了，，所以不会重复添加
+    // 宏任务执行完成会执行微任务，flushSchedulerQueue，循环执行watcher的run
+    // watcher的run函数或执行组件的_update,将组件转换成新的vnode并且和oldvnode进行比对，并返回新的vnode，和对dom进行更新
+    // 在对vnode和oldvnode进行patch的过程中，会对子组件d进行props更新并触发其set，收集到watcher，并添加到queue
+    // 当v组件的更新完成后就会执行子组件d的watcher
+
+    // 组件渲染流程
+    // initLifecycle(vm);
+    //   initEvents(vm);
+    //   initRender(vm);
+    //   callHook(vm, 'beforeCreate');
+    //   initInjections(vm); // resolve injections before data/props
+    //   initState(vm);
+    //   initProvide(vm); // resolve provide after data/props
+    //   callHook(vm, 'created');
+
+    // 挂载函数
+    function mountComponent (
+      vm,
+      el,
+      hydrating
+    ) {
+      vm.$el = el;
+      if (!vm.$options.render) {
+        vm.$options.render = createEmptyVNode;
+        {
+          /* istanbul ignore if */
+          if ((vm.$options.template && vm.$options.template.charAt(0) !== '#') ||
+            vm.$options.el || el) {
+            warn(
+              'You are using the runtime-only build of Vue where the template ' +
+              'compiler is not available. Either pre-compile the templates into ' +
+              'render functions, or use the compiler-included build.',
+              vm
+            );
+          } else {
+            warn(
+              'Failed to mount component: template or render function not defined.',
+              vm
+            );
+          }
+        }
+      }
+      callHook(vm, 'beforeMount');
+
+      var updateComponent;
+      // 收集依赖
+      console.log('updateComponent');
+      /* istanbul ignore if */
+      if (config.performance && mark) {
+        updateComponent = function () {
+          var name = vm._name;
+          var id = vm._uid;
+          var startTag = "vue-perf-start:" + id;
+          var endTag = "vue-perf-end:" + id;
+
+          mark(startTag);
+          var vnode = vm._render();
+          mark(endTag);
+          measure(("vue " + name + " render"), startTag, endTag);
+
+          mark(startTag);
+          vm._update(vnode, hydrating);
+          mark(endTag);
+          measure(("vue " + name + " patch"), startTag, endTag);
+        };
+      } else {
+        updateComponent = function () {
+          vm._update(vm._render(), hydrating);
+        };
+      }
+
+      // we set this to vm._watcher inside the watcher's constructor
+      // since the watcher's initial patch may call $forceUpdate (e.g. inside child
+      // component's mounted hook), which relies on vm._watcher being already defined
+      // 收集组件的watcher，并会触发一次get，实现第一次渲染
+      new Watcher(vm, updateComponent, noop, {
+        before: function before () {
+          if (vm._isMounted && !vm._isDestroyed) {
+            callHook(vm, 'beforeUpdate');
+          }
+        }
+      }, true /* isRenderWatcher */);
+      hydrating = false;
+
+      // manually mounted instance, call mounted on self
+      // mounted is called for render-created child components in its inserted hook
+      if (vm.$vnode == null) {
+        vm._isMounted = true;
+        callHook(vm, 'mounted');
+      }
+      return vm
+    }
+    // mount函数赋值了2次
+    // Vue.prototype.$mount = function (
+    //   el,
+    //   hydrating
+    // ) {
+    //   console.log('m1', el)
+    //   // 实现挂载的方法
+    //   el = el && inBrowser ? query(el) : undefined;
+    //   return mountComponent(this, el, hydrating)
+    // };
+    // var mount = Vue.prototype.$mount;
+    // Vue.prototype.$mount = function (
+    //   el,
+    //   hydrating
+    // ) {....}
+
+    // new Vue会执行 Vue.prototype._init,对组件进行初始化，并且对data，props，computed等进行监听，object.definePrototype
+    // 如果有el，会执行挂载,没有就不做处理，等待手动调用$mount
+    // v.$mount('#app'),会先解析模板，templete - parser ast - optimize静态优化 - generate生成render函数
+    // 然后会调用mountComponent进行挂载,构造update函数和初始化watcher,watcher里面触发get进行依赖收集，再触发_update函数进行初始化渲染
+    // 渲染会执行_update，执行过程中会调用patch方法（patch是由createPatchFunction函数执行返回的闭包函数）
+    // 初始化时根节点的oldNode是dom，子组件为空，
+    // 第一次渲染根节点会根据el（div#app）调用emptyNodeAt创建一个根节点node，并获取其父节点，后续是挂载在父节点上的
+    // 然后creatEle创建节点
+    // createChildren循环创建子节点，遇到组件createComponent创建,执行componentVNodeHooks.init初始化，并进行挂载，递归处理，
+    // 从内层到外层触发invokeInsertHook，mounted函数，最后根节点的patch函数再移出挂载的（div#app）dom
+  </script>
+</body>
+</html>

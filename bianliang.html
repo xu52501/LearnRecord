@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // && 运算符返回true，取后面的值，两个false取前面的值。
+// || 运算符 返回true， 取前面的值，两个false取后面的值
+// 函数执行
+// 变量提升：变量的声明会提升到最顶部，但不会赋值，初始值是undefined。
+// 函数提升：函数也会提升到最顶部，并且会赋值
+  function test(x) {
+    console.log(a);
+
+    t();
+    // c();
+
+    var a = 10;
+
+    function t() {
+      console.log(a,x);
+    }
+
+    var c = function() {
+      console.log('c');
+    }
+  }
+  test('x');
+
+  var s = new String('a'); // typeof s Object
+  var s1 = 'a'; // typeof s1 string
+  s !== s1 
+  </script>
+</body>
+</html>

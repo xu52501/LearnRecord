@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // js中的parseInt运算规则
+    // parseInt(param, radix) 相当于 parseInt(String(param).trim(),radix)
+    parseInt(010); // 忽略了radix，010 ==> 8， 8 ==> '8', parseInt('8') 忽略了radix，默认识别为10进制
+    // 0开头，8进制数，0x十六进制数，
+    parseInt('4123534', 5); // 5 >= 5,超出金指数范围被丢弃，所以 ==> parseInt('4123', 5) 3+2*5+1*5*5+4*5*5*5
+    parseInt(0x10, 8); // ==> parseInt('16', 8) 6+8
+    parseInt(0x13, 8); // ==> parseInt('19', 8) 因为9超出了8进制所使用的的字符范围，别丢弃，转换结果为parseInt('1', 8);
+  </script>
+  <script>
+  // 位运算处理权限https://www.lagou.com/lgeduarticle/73533.html
+  let r = 0b100
+  let w = 0b010
+  let x = 0b001
+
+  // 给用户赋 r w 两个权限
+  let user = r | w
+  // user = 6
+  // user = 0b110 (二进制)
+
+  console.log((user & r) === r) // true  有 r 权限
+  console.log((user & w) === w) // true  有 w 权限
+  console.log((user & x) === x) // false 没有 x 权限
+    // 你在jsfiddle 里面运行 会发现 $$ 输出的其实是 undefined。 但是现在你新开一个窗口打开console(F2)，输入$$， 然后就在Chrome中就会输出：
+    //     注* 上面的Chrome版本比较旧，其实较新版会输出这个
+    // function (selector){
+    //   var elements = new Elements;
+    //   if (arguments.length == 1 && typeof selector == 'string') return Slick.search(this.document, selector, elements);
+    //   var args = Array.flatten(arguments);
+    //   for (var i = 0, l = args.length; i < l; i++){
+    //     var item = args[i];
+    //     switch (typeOf(item)){
+    //       case 'element': elements.push(item); break;
+    //       case 'string': Slick.search(this.document, item, elements);
+    //     }
+    //   }
+    //   return elements;
+    // }
+    //     在很多浏览器的设计工具中有大量的预定义API ，大部分是从Firebug中借鉴的，因为Firebug的设计（大部分）是正确的。
+
+    // 当Firebug在2006年被创立的时侯。当时的JavaScript库Prototype.js使用$来表示getElementById()。这个语法糖很方便地抓取到了用户想要的元素。它节省了大量的时间，之后整个框架都使用采用了$语法糖。
+
+    // 在2006年初，jQuery发布了，然后使用基于CSS选择器的$()语法来选择任意元素。在之后的几天，Prototype也发布了自己的CSS选择器引擎，但是$已经在他们的库中被占用了。所以它们换成了$$()。称之为bling-bling 函数。
+
+    // 所以Firebug采用了Prototype的API，因为它在2006年仍然非常流行。在后jQuery的日子里， 它等价于： window.$ = document.querySelectorAll.bind(document) 。有趣的是在Opera的开发工具中，它们也采用$作为querySelectorAll的别名。
+  [].forEach.call($$('*'), function(a) {a.style.outline = "1px solid #"+(~~(Math.random()*(1<<24))).toString(16)})
+  // ~对操作数按位取反，两个的意思即作两次取反操作，其实是等作原数本身（操作数是32整数范围内）
+  //   ~~(Math.random()*7) 
+
+  // 即：
+
+  // var n = Math.random() * 7;
+
+  // n = ~n;
+
+  // n = ~n;//其实和初始值一样   
+
+  // 和对BOOLEAN类型的作两次，操作是一个意思，只不过是把小数位给去掉了。
+
+  // 推荐用>>操作符，一次即道可：
+
+  // var n = Math.random() * 7;n = n>>0; 
+
+  // <<”运算符执行左移位运算。在移位运算过程中，符号位始终保持不变。如果右侧空出位置，则自动填充为 0；超出 32 位的值，则自动丢弃。
+  // 把数字 5 向左移动 2 位，则返回值为 20。
+  // console.log(5 << 2);  //返回值20
+
+  // “>>”运算符执行有符号右移位运算。与左移运算操作相反，它把 32 位数字中的所有有效位整体右移，再使用符号位的值填充空位。移动过程中超出的值将被丢弃。
+  //   把数值 1000 向右移 8 位，则返回值为 3。
+  // console.log(1000 >> 8);  //返回值3
+  //   把数值 -1000 向右移 8 位，则返回值为 -4。
+  // console.log(-1000  >> 8);  //返回值 -4
+
+  // “>>>”运算符执行五符号右移位运算。它把无符号的 32 位整数所有数位整体右移。对于无符号数或正数右移运算，无符号右移与有符号右移运算的结果是相同的。
+  // console.log(1000 >> 8);  //返回值3
+  // console.log(1000 >> 8);  //返回值3
+  // 对于负数来说，无符号右移将使用 0 来填充所有的空位，同时会把负数作为正数来处理，所得结果会非常大所以，使用无符号右移运算符时要特别小心，避免意外错误。
+  // console.log(-1000 >> 8);  //返回值 -4
+  // console.log(-1000 >>> 8);  //返回值 16777212
+
+//   “与运算”的特殊用途：
+
+// （1）清零。如果想将一个单元清零，即使其全部二进制位为0，只要与一个各位都为零的数值相与，结果为零。
+
+ 
+
+// （2）取一个数中指定位
+
+// 方法：找一个数，对应X要取的位，该数的对应位为1，其余位为零，此数与X进行“与运算”可以得到X中的指定位。
+
+// 例：设X=10101110，
+
+//     取X的低4位，用 X & 0000 1111 = 0000 1110 即可得到；
+
+//     还可用来取X的2、4、6位。
+
+// 按位或运算符（|）
+
+// 参加运算的两个对象，按二进制位进行“或”运算。
+
+// 运算规则：0|0=0；   0|1=1；   1|0=1；    1|1=1；
+
+//       即 ：参加运算的两个对象只要有一个为1，其值为1。
+
+// 例如:3|5　即 0000 0011 | 0000 0101 = 0000 0111   因此，3|5的值得7。　
+
+ 
+
+// 另，负数按补码形式参加按位或运算。
+
+// “或运算”特殊作用：
+
+// （1）常用来对一个数据的某些位置1。
+
+// 方法：找到一个数，对应X要置1的位，该数的对应位为1，其余位为零。此数与X相或可使X中的某些位置1。
+
+// 例：将X=10100000的低4位置1 ，用 X | 0000 1111 = 1010 1111即可得到。
+
+
+// 异或运算符（^）
+
+// 参加运算的两个数据，按二进制位进行“异或”运算。
+
+// 运算规则：0^0=0；   0^1=1；   1^0=1；   1^1=0；
+
+//    即：参加运算的两个对象，如果两个相应位为“异”（值不同），则该位结果为1，否则为0。
+
+//  注：
+
+// 交换律：A^B=B^A
+
+// 结合律：A^B^C=A^(B^C)=(A^B)^C
+
+// 自反律：A^B^B=A^0=A
+
+// X^X=0 ,X^0=X
+
+ 
+
+// “异或运算”的特殊作用：
+
+// （1）使特定位翻转 找一个数，对应X要翻转的各位，该数的对应位为1，其余位为零，此数与X对应位异或即可。
+
+// 例：X=10101110，使X低4位翻转，用X ^ 0000 1111 = 1010 0001即可得到。
+
+ 
+
+// （2）与0相异或，保留原值 ，X ^ 0000 0000 = 1010 1110。
+
+// 从上面的例题可以清楚的看到这一点。
+
+
+// 答案与解析
+// 直观操作：获取页面所有的元素，然后给这些元素加上1px的外边框，并且使用了随机颜色
+
+// 几个关键点：
+// 1）选择页面中所有的元素
+// $$函数是现代浏览器提供的一个命令行API，它相当于document.querySelectorAll，可以将当前页面中的CSS选择器作为参数传给该方法，然后它会返回匹配的所有元素。
+
+// 2）遍历元素
+// [].forEach.call( $$('*'), function( a ) { /* 具体的操作 */ });  
+// 通过使用函数的call和apply方法，可以实现在类似NodeLists这样的类数组对象上调用数组方法。
+
+// 3）为元素添加颜色
+// a.style.outline="1px solid #" + color  
+// 代码中使用outline的CSS属性给元素添加一个边框。由于渲染的outline是不在CSS盒模型中的，所以为元素添加outline并不会影响元素的大小和页面的布局。
+
+// 4）生成随机颜色
+// ~~(Math.random()*(1<<24))).toString(16)  
+// ①Math.random()*(1<<24) 可以得到 0~2^24 - 1 之间的随机数，使用了位操作
+// ②因为得到的是一个浮点数，但我们只需要整数部分，使用取反操作符 ~ 连续两次取反获得整数部分，使用两个波浪号等价于使用parseInt，
+// const a =12.34;
+// ~~a == parseInt(a, 10); // true  
+// ③然后再用 toString(16) 的方式，转换为一个十六进制的字符串。toString()方法将数值转换成字符串时，接收一个参数用以指明数值的进制。如果省略了该参数，则默认采用十进制，但你可以指定为其他的进制，
+  </script>
+</body>
+</html>

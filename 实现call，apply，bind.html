@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="test">点击执行</div>
+  <script>
+  // call
+  // 实现原理：改变this指向，es5非箭头函数this始终指向调用他的对象
+  Function.prototype.mCall = function(context, ...arg) {
+    const k = Symbol('对象');
+
+    context[k] = this;
+
+    context[k](arg);
+  }
+
+  // apply
+  // 实现原理：改变this指向，es5非箭头函数this始终指向调用他的对象
+  Function.prototype.mApply = function(context, ...arg) {
+    const k = Symbol('对象');
+
+    context[k] = this;
+
+    context[k](...arg);
+  }
+  var o = {
+    a: 1,
+  }
+
+  Function.prototype.bind = function (context) {
+    var _this = this
+ 
+    return function() {
+      var args = Array.prototype.slice.call(arguments)
+
+      console.log(arguments);
+      return _this.apply(context, args)
+    }
+  }
+
+  function test(t) {
+    console.log(this.a, t);
+  }
+  test();
+  test.bind(o)(555);
+  test.mCall(o);
+
+  // 防抖函数
+  const debounce = (fn, wait, bthis) => {
+    let timer = 0;
+    console.log(this);
+    return function(...args) {
+      // @ts-ignore
+      const content = this;
+      console.log(content);
+
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        // fn(...args);
+        return bthis ? fn.apply(content, args) : fn(...args);
+      }, wait);
+    };
+  };
+
+  var ox = {
+    a: 1,
+    b(e) {
+      console.log(e, this.a, this);
+    }
+  }
+
+  document.querySelector('#test').onclick = debounce(ox.b);
+  </script>
+</body>
+</html>

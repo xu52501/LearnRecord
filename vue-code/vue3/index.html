@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    {{state.test}}
+  </div>
+  <script src="./vue.global.js"></script>
+  <script>
+    const { createApp, reactive } = Vue;
+    // vue3的源码和特性
+
+    const App = {
+      setup() {
+        const state = reactive({
+          test: 1,
+        })
+
+        return {
+          state,
+        };
+      }
+    }
+
+    createApp(App).mount('#app');
+  </script>
+</body>
+</html>
