@@ -40,3 +40,35 @@ class Child {
 }
 
 // const c1 = new Child();
+
+// 正式代码的原型继承，不会直接实例父类，而是实例一个空函数，避免重复声明动态属性
+const extends = (Child, Super) => {
+  const fn = function () {};
+  
+  fn.prototype = Super.prototype;
+  Child.prototype = new fn();
+  Child.prototype.constructor = Child;
+};
+
+// start c4 c2 c3 c5 c7 c6
+
+// console.log('start');
+// setTimeout(() => {
+//   console.log('c2');
+//   Promise.resolve().then(() => {
+//     console.log('c3')
+//   })
+// }, 0);
+
+// new Promise(function(resolve, reject) {
+//   console.log('c4');
+//   setTimeout(() => {
+//     console.log('c5');
+//     resolve('c6')
+//   }, 0)
+// }).then((res) => {
+//   console.log('c7');
+//   setTimeout(() => {
+//     console.log(res);
+//   }, 0)
+// })

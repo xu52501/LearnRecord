@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+
+  // 经过对比，只要是”^”这个字符是在中括号”[]”中被使用的话就是表示字符类的否定，如果不是的话就是表示限定开头。我这里说的是直接在”[]”中使用，不包括嵌套使用。 
+  // 其实也就是说”[]”代表的是一个字符集，”^”只有在字符集中才是反向字符集的意思。
+  // DI.prototype.inject = function (func) {
+  
+  //  var deps = /^[^(]+\(([^)]+)/.exec(func.toString());
+
+  // //  构建参数绑定数组
+  //  deps = deps ? deps[1]
+  //    .split(/\s?,\s?/)
+  //    .map(function (dep) {
+  //      return this.dependency[dep];
+  //    }.bind(this)) : [];
+
+  //  // 通过apply将依赖参数传入函数
+  //  return function () {
+  //    return func.apply(this, deps);
+  //  };
+
+  // }
+  var DI = function (dependency) {
+    this.dependency = dependency;
+  };
+  
+  // Should return new function with resolved dependencies
+  DI.prototype.inject = function (func) {
+    // 参数列表
+    const params = /^[^(]+\(([^)]+)/.exec(func.toString());
+
+    const fns = params[1].split(/\s?,\s?/);
+
+    const deps = fns.length ? fns.map((item) => {
+      return this.dependency[item];
+    }) : [];
+
+    return () => {
+      return func(...deps);
+    }
+  }
+  // 要注入的依赖
+  var deps = {
+    'dep1': function () {return 'this is dep1';},
+    'dep2': function () {return 'this is dep2';},
+    'dep3': function () {return 'this is dep3';},
+    'dep4': function () {return 'this is dep4';}
+  };
+  
+  // 新建一个“注射器”
+  var di = new DI(deps);
+  
+  // 注射
+  var myFunc = di.inject(function (dep3, dep1, dep2) {
+    return [dep1(), dep2(), dep3()].join(' -> ');
+  });
+
+  console.log(myFunc());
+  
+  // 测试
+  // Test.assertEquals(myFunc(), 'this is dep1 -> this is dep2 -> this is dep3');
+  </script>
+</body>
+</html>

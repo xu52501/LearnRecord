@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function compose(...funcs) {
+      if (funcs.length === 0) {
+        return arg => arg;
+      }
+
+      if (funcs.length === 1) {
+        return funcs[1]
+      }
+
+      // 实现函数组合
+      return funcs.reduce(function (a, b) {
+        console.log(a, 'ffff', b);
+        return function nextWrapper(...arg) {
+          // console.log(arg[0]); next next_from_foo
+          return a(b(...arg));
+        }
+      })
+    }
+    // 1.function nextWrapper#1() {return fooMidd(barMidd(...args))}
+    // 2.function nextWrapper#2() {return nextWrapper#1(bazMidd(...args))}
+
+    function fooMidd(next) {
+      console.log('foomidd trigger');
+      return function next_from_foo(action) {
+        console.log('foomidd before next');
+        next(action);
+        console.log('foomidd after next');
+      }
+    }
+
+    function barMidd(next) { // next = next_from_baz
+      console.log('barMidd trigger');
+      console.log('baz', next);
+      return function next_from_bar(action) {
+        console.log('barMidd before next');
+        next(action);
+        console.log('barMidd after next');
+      }
+    }
+
+    function bazMidd(next) {
+      console.log('bazMidd trigger');
+      console.log('baz', next);
+      return function next_from_baz(action) {
+        console.log('bazMidd before next');
+        next(action);
+        console.log('bazMidd after next');
+      }
+    }
+
+    function next(action) {
+      console.log('next', action);
+    }
+
+    // const fff = [fooMidd, barMidd, bazMidd].reduce((f1, f2) => {
+    //   return (next) => {
+    //     return f1(f2(next));
+    //   }
+    // });
+
+    // (next) => {fooMidd(barMidd(bazMidd(next)))}
+    // const ggg = fff(next);
+    // 
+    // console.log(ggg);
+    // ggg('acttt');
+
+
+    // 1.function nextWrapper#1() {return fooMidd(barMidd(...args))}
+    // 2.function nextWrapper#2() {return nextWrapper#1(bazMidd(...args))}
+    // const chain = compose(fooMidd, barMidd, bazMidd);
+
+    // // function nextWrapper#2(next) {return nextWrapper#1(bazMidd(...args))}()
+    // // bazMidd trigger
+    // // barMidd trigger
+    // // foomidd trigger
+    // const nextChain = chain(next); // 执行bazMidd -> barMidd -》 fooMidd
+
+    // nextChain('{data}'); //执行next_from_foo -> next_from_bar -> next -> next_from_bar -> 执行next_from_foo
+
+    // 执行栈
+    // 入栈
+    // next_from_foo -> [next_from_bar, next_from_foo] -> [next_from_baz, next_from_bar, next_from_foo] -> [next, next_from_baz, next_from_bar, next_from_foo]
+    // 到现在输出foomidd before next  ->   barMidd before next ->   bazMidd before next
+
+    // 逐层出栈 next -> next_from_baz -> next_from_bar -> next_from_foo
+    // 在输出 {data} next  ->    bazMidd after next  ->  barMidd after next  ->   foomidd after next 
+
+
+    // koa2的中间件原理
+    function kcompose(midds) {
+      return function (context, next) {
+        return dispatch(0);
+        function dispatch(i) {
+          const nowMidd = midds[i];
+          if (nowMidd) {
+            Promise.resolve();
+          } else {
+            // 异步，
+            return Promise.resolve(nowMidd(context, function next() {
+              return dispatch(i + 1);
+            }))
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -8,6 +8,26 @@
 </head>
 <body>
   <script>
+    const arr = [1, 2, 3];
+
+    // 存在，等效于 > -1
+    if (~arr.indexOf(1)) {
+
+    }
+
+    // 不存在，等效于 === -1
+    !~arr.indexOf(1);
+
+    // 对象 === 比较的是内存地址，而 >= 将比较转换后的值
+    console.log({} === {}) // false
+    // 隐式转换 toString()
+    console.log({} >= {})  // true
+
+    // 在 try/catch 代码块中，如果碰到 return xxyyzz; 关键词，
+    // 那么 xxyyzz 会先执行并把值放在临时变量里，接着去执行 finally 代码块的内容后再返回该临时变量。 
+    // 如果 finally 中也有 return aabbcc ，那么会立即返回新的数据 aabbcc 。
+  </script>
+  <script>
     // js中的parseInt运算规则
     // parseInt(param, radix) 相当于 parseInt(String(param).trim(),radix)
     parseInt(010); // 忽略了radix，010 ==> 8， 8 ==> '8', parseInt('8') 忽略了radix，默认识别为10进制
@@ -15,6 +35,10 @@
     parseInt('4123534', 5); // 5 >= 5,超出金指数范围被丢弃，所以 ==> parseInt('4123', 5) 3+2*5+1*5*5+4*5*5*5
     parseInt(0x10, 8); // ==> parseInt('16', 8) 6+8
     parseInt(0x13, 8); // ==> parseInt('19', 8) 因为9超出了8进制所使用的的字符范围，别丢弃，转换结果为parseInt('1', 8);
+
+    // parseInt 太小的数字会产生 bug
+    parseInt(0.00000000454);  // 4
+    parseInt(10.23);          // 10
   </script>
   <script>
   // 位运算处理权限https://www.lagou.com/lgeduarticle/73533.html

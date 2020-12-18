@@ -23,6 +23,8 @@
     B1.prototype = A1.prototype;
 
     const b1 = new B1()
+
+    // 原型继承不能继承静态属性和构造函数上的属性
     console.log(b1, b1.a, b1.c)
 
     // this是在运行时确定的

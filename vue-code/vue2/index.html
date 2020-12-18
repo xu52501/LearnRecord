@@ -57,23 +57,23 @@
 // ) {
 // with(this){return _c('div',[_v(_s(a)),_c('amt'),_t("cxx")],2)}
 // }
-    // template: `<div>{{a}}<amt></amt><slot name="cxx"></slot></div>`,
+    template: `<div>{{a}}<amt></amt><slot name="cxx"></slot></div>`,
     data() {
       return {
         a: 2,
       }
     },
     // render()
-    render(c) {
-      const vNode = c('div', {
-        domProps: {
-          innerText: this.a,
-        }
-      }, ['werwer', c('amt', {})]);
+    // render(c) {
+    //   const vNode = c('div', {
+    //     domProps: {
+    //       innerText: this.a,
+    //     }
+    //   }, ['werwer', c('amt', {})]);
 
-      console.log(vNode);
-      return vNode;
-    },
+    //   // console.log(vNode);
+    //   return vNode;
+    // },
     // beforeMount() {
     //   console.log('beforeMount3')
     // },
@@ -83,9 +83,9 @@
     // beforeCreate() {
     //   console.log('beforeCreate3')
     // },
-    // created() {
-    //   console.log('Create3')
-    // },
+    created() {
+      // console.log('Create3', this.$vnode)
+    },
     components: {
       amt
     }
@@ -98,10 +98,16 @@
 // ) {
 // with(this){return _c('div',{staticClass:"b",on:{"click":function($event){$event.stopPropagation();return handleClick($event)}}},[(a)?_c('c'):_e(),_c('c',[_c('span',{attrs:{"slot":"cxx"},slot:"cxx"},[_v("2342")])]),_v(_s(b)),_c('div',[_v(_s(b)+_s(d))])],1)}
 // })
-    template: `<div class="b" ref="d" @click.stop="handleClick($event, 123)"><c v-if="a === 2"></c><c><span slot="cxx" v-if="a === 2" @click="a++">2342</span></c>{{b}}<div>{{b}}{{d}}</div></div>`,
+    template: `
+    <div class="b" ref="d" @click.stop="handleClick($event, 123)">
+      <c v-if="a === 2"></c>
+      <c><span slot="cxx" v-if="a === 2" @click="a++">ffcc{{a}}</span></c>
+      {{b}}
+      <div>{{b}}{{d}}</div>
+    </div>`,
     data() {
       return {
-        a: 1,
+        a: 2,
         e: [],
         d: {},
       }
@@ -111,6 +117,10 @@
     props: ['b'],
     methods: {
       handleClick(e, d) {
+        // 改变的时候会触发对应属性的set，就行更新
+        // dep.notify，视图更新将watcher添加到quequeWatcher
+        // 微任务更新，所有同步的数据更改完成，
+        // 所有watcher添加到更新队列，会去重，一个组件只会有一次更新，并排序父组件在前面，子组件在后面
         console.log(e, d)
         this.a++
         this.$set(this.d, 'a', 1);
@@ -140,10 +150,22 @@
     // el: '#app1'
   };
   
+//   <div class="a">
+
+// <d></d>
+
+// </div>
   const v = new Vue({
-    template: `<div class="a" @click="handleClick"><d :b="b"></d>{{a}}{{ga}}<span v-for="item in b" :key="item">{{b}}</span></div>`,
+    template: `<div class="a">
+
+      {{d}}{{b}}{{a}}
+
+    </div>`,
     provide: {
       name: 'sadfsddf'
+    },
+    components: {
+      d,
     },
     data: {
       a: 1,
@@ -163,27 +185,28 @@
     // created() {
     //   console.log('Create1')
     // },
-    methods: {
-      handleClick() {
-        // this.a++;
-        this.b++;
-        this.a--;
-        // console.log(2);
-      }
-    },
-    components: {
-      d
-    },
-    watch: {
-      'a'() {
-        console.log('aaa')
-      }
-    },
+
     computed: {
+      // 计算属性会有一个watcher,更新的时候会在依赖变化的时候进行更新
+      // 当ga触发get的时候，
+      // 触发ga的get，会去执行ga函数
+      // 触发a的get，所以ga函数对应的watcher会保存一份到a的依赖列表里面Dep.subs
+      // 当a被set的时候，会触发ga对应watcher的更新，dirty = true,
+      // 如果有get ga的地方就会触发ga的get，重新计算结果watcher.evaluate()
+      // 属性b同理
       ga() {
-        return this.a + 'dd'
+        console.log('ga')
+        return this.a + this.b + 'dd'
       }
     },
+    created() {
+      
+      this.a = 2;
+      console.log('this', this.a, this.ga);
+      // debugger;
+      this.a = 3;
+      console.log(this.ga);
+    } 
   });
 
   // const extend = Vue.extend({
@@ -213,7 +236,7 @@
   // console.log(Vue.component('extend'))
   // console.log(v, Vue.options)
 
-  // console.log(new (Vue.extend(c)));
+  // console.log(Vue.extend(c).options);
   // // 继承的局部方法，注册到组件
   // (new (Vue.extend(c))).$mount('#app1');
   v.$mount('#app');

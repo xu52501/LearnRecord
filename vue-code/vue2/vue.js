@@ -515,6 +515,7 @@
       return
     }
     // a.b.c向上
+    // 有多少级依赖
     var segments = path.split('.');
     return function (obj) {
       // 遍历获取，this.a.b.c触发get
@@ -726,6 +727,7 @@
 
   Dep.prototype.addSub = function addSub (sub) {
     this.subs.push(sub);
+    // console.log(this.subs);
   };
 
   Dep.prototype.removeSub = function removeSub (sub) {
@@ -748,6 +750,7 @@
       subs.sort(function (a, b) { return a.id - b.id; });
     }
     for (var i = 0, l = subs.length; i < l; i++) {
+      // console.log(subs[i]);
       subs[i].update();
     }
   };
@@ -1069,13 +1072,17 @@
       val = obj[key];
     }
 
+    // 对嵌套的对象进行依赖收集
     var childOb = !shallow && observe(val);
     Object.defineProperty(obj, key, {
       enumerable: true,
       configurable: true,
       get: function reactiveGetter () {
         var value = getter ? getter.call(obj) : val;
-        // console.log(value, key);
+        // if (dep.id === 5) {
+        //   console.log(dep, key);
+        // }
+        // console.log(Dep.target); // 组件初始化时是一个watcher
         // 初始化用到的才会收集
         if (Dep.target) {
           dep.depend();
@@ -1105,8 +1112,10 @@
         } else {
           val = newVal;
         }
+
+        // 引用类型的数据会重新收集依赖
         childOb = !shallow && observe(newVal);
-        // console.log(newVal, dep);
+        console.log(newVal, dep);
         dep.notify();
       }
     });
@@ -1646,7 +1655,7 @@
       // filters
       // _base
       // name
-      // 会将parent的属性挂载到原型上，components: {d, __proto__: { c }}
+      // 会将parent的属性挂载到对应type的原型上，components: {d, __proto__: { c }}
       // parent是VueComponent上属性合并的结果, 
       // child是传入的options
       // vm是当前实例
@@ -1671,12 +1680,13 @@
       return
     }
     var assets = options[type];
+    // console.log(assets);
     // check local registration variations first
     if (hasOwn(assets, id)) { return assets[id] }
     var camelizedId = camelize(id);
-    if (hasOwn(assets, camelizedId)) { return assets[camelizedId] }
+    if (hasOwn(assets, camelizedId)) {return assets[camelizedId] }
     var PascalCaseId = capitalize(camelizedId);
-    if (hasOwn(assets, PascalCaseId)) { return assets[PascalCaseId] }
+    if (hasOwn(assets, PascalCaseId)) {return assets[PascalCaseId] }
     // fallback to prototype chain
     var res = assets[id] || assets[camelizedId] || assets[PascalCaseId];
     if (warnMissing && !res) {
@@ -1685,6 +1695,8 @@
         options
       );
     }
+
+    // console.log(res, options, type, id);
     return res
   }
 
@@ -2627,6 +2639,8 @@
     if (!children || !children.length) {
       return {}
     }
+    // children组件标签包裹的vnode，context当前所在组件上下文
+    // console.log(children, context);
     var slots = {};
     // debugger;
     for (var i = 0, l = children.length; i < l; i++) {
@@ -2646,6 +2660,7 @@
       ) {
         var name = data.slot;
         var slot = (slots[name] || (slots[name] = []));
+        // template可能会传参数
         if (child.tag === 'template') {
           slot.push.apply(slot, child.children || []);
         } else {
@@ -2678,6 +2693,7 @@
     normalSlots,
     prevSlots
   ) {
+    // console.log(slots, normalSlots, prevSlots);
     var res;
     var hasNormalSlots = Object.keys(normalSlots).length > 0;
     var isStable = slots ? !!slots.$stable : !hasNormalSlots;
@@ -2810,6 +2826,11 @@
     props,
     bindObject
   ) {
+    // console.log(name,
+    //   fallback,
+    //   props,
+    //   bindObject);
+    // console.log(this.$scopedSlots);
     // debugger;
     var scopedSlotFn = this.$scopedSlots[name];
     var nodes;
@@ -2841,6 +2862,7 @@
     if (target) {
       return this.$createElement('template', { slot: target }, nodes)
     } else {
+      // console.log(nodes, target);
       return nodes
     }
   }
@@ -3723,9 +3745,11 @@
     Vue.prototype._render = function () {
       var vm = this;
       var ref = vm.$options;
+      // parse得到的render函数，每个组件都有一个render函数用来获得vnode
       var render = ref.render;
       var _parentVnode = ref._parentVnode;
       if (_parentVnode) {
+        // console.log(vm, _parentVnode);
         // 构造$scopedSlots对象{default() {}}
         vm.$scopedSlots = normalizeScopedSlots(
           _parentVnode.data.scopedSlots,
@@ -3737,6 +3761,7 @@
       // set parent vnode. this allows render functions to have access
       // to the data on the placeholder node.
       // console.log(_parentVnode);
+      // 组件node
       vm.$vnode = _parentVnode;
       // render self
       var vnode;
@@ -4151,7 +4176,7 @@
       // based on the rendering backend used.
       // 是不是初次渲染
       // console.log(vm.$el);
-      // 只有根节点创建的时候又$el
+      // 只有根节点创建的时候有$el
       if (!prevVnode) {
         // initial render
         // 创建节点传入dom<div id="app"></div>
@@ -4269,11 +4294,13 @@
         var endTag = "vue-perf-end:" + id;
 
         mark(startTag);
+        // 得到vnode
         var vnode = vm._render();
         mark(endTag);
         measure(("vue " + name + " render"), startTag, endTag);
 
         mark(startTag);
+        // 进行patch，渲染节点
         vm._update(vnode, hydrating);
         mark(endTag);
         measure(("vue " + name + " patch"), startTag, endTag);
@@ -4302,6 +4329,7 @@
     // manually mounted instance, call mounted on self
     // mounted is called for render-created child components in its inserted hook
     if (vm.$vnode == null) {
+      // 节点为空
       vm._isMounted = true;
       callHook(vm, 'mounted');
     }
@@ -4615,6 +4643,7 @@
     // watcher添加，添加微任务异步函数
     var id = watcher.id;
     // 一个组件只有有一个watcher
+    // 会去重，同一个组件只会有一次更新
     // console.log('watcher');
     if (has[id] == null) {
       
@@ -4699,6 +4728,7 @@
     } else {
       // watch获取收集依赖函数parsePath(expOrFn)
       // parsePath(expOrFn)（）函数内部会触发get，进行依赖收集，触发dep.depend()，并将当前的Watcher添加到deps
+      // 改变地址也会触发Object.defineprototype
       this.getter = parsePath(expOrFn);
       if (!this.getter) {
         this.getter = noop;
@@ -4736,6 +4766,7 @@
       // "touch" every property so they are all tracked as
       // dependencies for deep watching
       if (this.deep) {
+        // 深度监听
         traverse(value);
       }
       popTarget();
@@ -4787,10 +4818,15 @@
   Watcher.prototype.update = function update () {
     /* istanbul ignore else */
     if (this.lazy) {
+      // 如果是懒执行，就会修改dirty为true
+      // 计算属性的缓存就是这个原理,如果计算属性的值没有变化dirty为false，就不会触发 watcher.evaluate();和视图更新
+      // 为true就会更新
       this.dirty = true;
     } else if (this.sync) {
+      // 同步执行
       this.run();
     } else {
+      // 放入队列微任务更新
       queueWatcher(this);
     }
   };
@@ -4843,10 +4879,12 @@
 
   /**
    * Depend on all deps collected by this watcher.
+   * 依赖于这个观察者收集的所有数据。
    */
   Watcher.prototype.depend = function depend () {
     var i = this.deps.length;
     while (i--) {
+      // console.log(this.deps);
       this.deps[i].depend();
     }
   };
@@ -5003,6 +5041,7 @@
     // observe data
     // 观察数据
     // console.log('observe');
+    // debugger;
     observe(data, true /* asRootData */);
   }
 
@@ -5040,11 +5079,11 @@
 
       // 对属性进行观察，并且不立即收集依赖
       // 组件中的依赖在组件mount触发get的时候进行收集了
-      // 计算属性再使用的时候触发依赖收集
+      // 计算属性再使用的时候触发依赖收集{ lazy: true }
       if (!isSSR) {
         // create internal watcher for the computed property.
         // console.log('computed watcher');
-        console.log(key, getter, key in vm)
+        // console.log(key, getter, key in vm)
         watchers[key] = new Watcher(
           vm,
           getter || noop, // ga的get触发getter函数
@@ -5111,7 +5150,13 @@
       // console.log(this, this._computedWatchers);
       var watcher = this._computedWatchers && this._computedWatchers[key];
       if (watcher) {
-        if (watcher.dirty) {
+        if (watcher.dirty) { // dirty做缓存，当计算属性依赖的data发生改变，dirty就会为true，重新计算并收集依赖，等待更新食欲过后会进行清除
+          // 如果计算属性依赖的data没有变化，就不会重新计算，直接返回当前的结果
+          // Watcher.prototype.evaluate = function evaluate () {
+          //   this.value = this.get();
+          //   this.dirty = false;
+          // };
+          // 执行get函数，计算新的值
           watcher.evaluate();
         }
         if (Dep.target) {
@@ -5229,6 +5274,7 @@
       options = options || {};
       options.user = true;
       var watcher = new Watcher(vm, expOrFn, cb, options);
+      // 先执行一次
       if (options.immediate) {
         try {
           cb.call(vm, watcher.value);
@@ -5299,6 +5345,8 @@
       initRender(vm);
       callHook(vm, 'beforeCreate');
       initInjections(vm); // resolve injections before data/props
+      
+      // watch的immid在这里会执行，所以会在created之前执行
       initState(vm);
       initProvide(vm); // resolve provide after data/props
       callHook(vm, 'created');
@@ -5433,6 +5481,7 @@
   /*  */
 
   function initMixin$1 (Vue) {
+    // 影响全局
     Vue.mixin = function (mixin) {
       this.options = mergeOptions(this.options, mixin);
       return this

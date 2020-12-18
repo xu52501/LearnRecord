@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // （箭头函数防坑）不能使用箭头函数定义原型方法，undefined
+    //  箭头函数不能作为构造函数，不能使用new
+    // 箭头函数没有arguments，caller，callee
+    // 箭头函数通过call和apply调用，不会改变this指向，只会传入参数
+    //  箭头函数没有原型属性
+    // 箭头函数不能作为Generator函数，不能使用yield关键字
+    // 箭头函数返回对象时，要加一个小括号 var func = () => ({ foo: 1 }); //正确
+    // 多重箭头函数就是一个高阶函数，相当于内嵌函数
+    // 箭头函数在ES6 class中声明的方法为实例方法，不是原型方法
+    //deom1
+    class Super22{
+        sayName(){
+            //do some thing here
+        }
+    }
+    //通过Super.prototype可以访问到sayName方法，这种形式定义的方法，都是定义在prototype上
+    var a = new Super22() // {Super223{__proto__: { sayName }}}
+    var b = new Super22()
+    a.sayName === b.sayName //true
+    //所有实例化之后的对象共享prototypy上的sayName方法
+    console.log(a, b);
+
+
+    //demo2
+    class Super223{
+        sayName =()=>{
+            //do some thing here
+        }
+    }
+    //通过Super.prototype访问不到sayName方法，该方法没有定义在prototype上
+    var a = new Super223() // {Super223{sayName}}
+    var b = new Super223()
+    a.sayName === b.sayName //false
+    console.log(a, b);
+    //实例化之后的对象各自拥有自己的sayName方法，比demo1需要更多的内存空间
+  </script>
+</body>
+</html>

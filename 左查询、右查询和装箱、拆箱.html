@@ -54,7 +54,16 @@
     }
 
     test(2);
-  })()
+  })();
+
+  const x = {
+    value: 0,
+    toString() {
+      return ++this.value;
+    }
+  }
+
+  x == 1 && x == 2 && x == 3;    // true
 
   console.log(1234);
 

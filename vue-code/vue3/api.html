@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+  <div id="app">
+    <span>{{state.a}}</span>
+    <span>{{state.b}}</span>
+  </div>
+  <script>
+    const { createApp, reactive, computed, watchEffect, onMounted, onUnmounted } = Vue
+    const obj = {
+      a: 1,
+    };
+    const com = {
+      setup() {
+        const state = reactive(obj);
+        // setTimeout(() => {
+          // 修改和添加obj上面的属性不能触发更新
+          // obj.a = 3;
+          // obj.b = 2;
+          // console.log(obj);
+          // 修改和添加state上的属性会触发更新
+          // state.a = 3;
+          // state.b = 2;
+        // }, 500)
+        return {
+          state
+        };
+      }
+    }
+
+    const vm = createApp(com).mount('#app');
+    // console.log(vm.$data, vm.state);
+  </script>
+</body>
+</html>

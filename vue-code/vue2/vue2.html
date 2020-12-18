@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="./vue.js"></script>
+</head>
+<body>
+  <div id="app">{{ga}}
+    <button @click="click">点我</button>
+    {{gd}}
+    {{d}}{{gc}}{{a.e}}
+  </div>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        a: {
+          b: {
+            c: 1,
+            d: 3
+          },
+          e: 324
+        },
+        d: 1,
+        e: 5
+      },
+      computed: {
+        ga() {
+          console.log('重新计算c');
+          return this.a.b.c;
+        },
+        gd() {
+          console.log('重新计算d');
+          return this.a.b.d;
+        },
+        gc() {
+          return this.a.b;
+        }
+      },
+      methods: {
+        click() {
+          // 更新以组件为单位，每个属性对应一个Dep，当触发更新就会执行Dep.notify
+          // 所以ga,gd只负责收集依赖，更新有a.b的set进行触发
+          // 触发a.b的set
+          // 每个computed对应一个watcher对象
+          // 计算属性会添加到依赖属性的Dep.subs里面，当依赖属性更新的时候就会随之更新
+          this.a.b = { c: 5, d: 3 };
+
+          this.d = 4;
+        }
+      }
+    })
+  </script>
+</body>
+</html>

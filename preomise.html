@@ -6,6 +6,30 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <script>
+    const f1 = () => {
+      // promise1
+      return new Promise((resolve) => {
+        resolve(1);
+      })
+    }
+
+    function f2() {
+      return f1().then((res) => {
+        // promise2
+        console.log('f2', res)
+        // return 'f2';
+        return Promise.resolve('f2');
+      })
+    }
+
+
+    f2().then((res) => {
+      // 接收到的是promise2返回的结果，不是promise1
+      console.log('window', res);
+    })
+    console.log('end');
+  </script>
+  <!-- <script>
     async function asyncl(){
       console.log('asyncl start');
       const rs = await async2(); // return new Promise(promise test);
@@ -39,7 +63,7 @@
     })
 
     console.log('script end');
-  </script>
+  </script> -->
 </head>
 <body>
 

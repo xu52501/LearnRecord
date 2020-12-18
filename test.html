@@ -68,12 +68,79 @@
   </style>
 </head>
 <body>
-  <div class="g-load_ppp g-loading_3a" :class="">
+  <div class="g-load_ppp g-loading_3a">
     <i class="iconfont icon icon-icon_loading_"></i>
     <i class="iconfont icon icon-icon_loading_"></i>
     <i class="iconfont icon icon-icon_loading_"></i>
   </div>
 
   <div class="jianbian"></div>
+  <script>
+    // 判断代码是否压缩居然也这么秀
+    function CustomFn() {}
+
+    const isCrashed = typeof CustomFn.name === 'string' && CustomFn.name === 'CustomFn';
+
+    var obj = {
+      a: {
+        b: 1,
+        c: 2,
+      }
+    }
+
+    var val = obj.a.b;
+
+    var val1 = obj.a;
+    //set1
+    Object.defineProperty(obj, 'a', {
+      enumerable: true,
+      configurable: true,
+      get() {
+        return val1;
+      },
+      set(newVal) {
+        val1 = newVal;
+
+        console.log(newVal);
+      }
+    });
+
+    // 只有修改obj.a.b才能触发这里的set
+    // set2
+    Object.defineProperty(obj.a, 'b', {
+      enumerable: true,
+      configurable: true,
+      get() {
+        return val;
+      },
+      set(newVal) {
+        val = newVal;
+
+        console.log(newVal);
+      }
+    });
+
+    document.querySelector('.g-load_ppp').addEventListener('click', () => {
+      console.log('click');
+      // 不会触发set2,会触发set1
+      // obj.a = {
+      //   b: 1,
+      //   c: 2,
+      // };
+
+      // 触发set1，不触发set2
+      obj.a = {
+        b: 11,
+        c: 23,
+      };
+
+      // 不会触发set1，会触发set2
+      // obj.a.b = 3;
+    })
+
+    document.querySelector('.jianbian').addEventListener('click', () => {
+      console.log(obj, obj.a.b);
+    })
+  </script>
 </body>
 </html>

@@ -33,6 +33,23 @@
   }
 
   console.log(a);
+
+  // es6函数带默认参数时将生成声明作用域
+  var x = 10;
+  function fn(x = 2, y = function () { return x + 1 }) {
+    var x = 5;
+    return y();
+  }
+
+  fn();   // 3
+
+  // 函数表达式（非函数声明）中的函数名不可覆盖
+  const c = function CC() {
+    CC = 123;
+    return CC;
+  };
+
+  c(); // Function
   </script>
 </body>
 </html>
